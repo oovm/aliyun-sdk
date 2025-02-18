@@ -11,3 +11,4 @@ pub use crate::{
     application::{Application, ApplicationOutput, ApplicationResponse, ApplicationUsage, DashModels, ResponseFormat},
     client::DashScope,
 };
+pub use aliyun_error::{AliError, AliErrorKind};
