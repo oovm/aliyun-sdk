@@ -1,6 +1,5 @@
 [package]
-name = "dashmodel"
-publish = false
+name = "dashscope"
 version = "0.0.0"
 authors = ["Aster <192607617@qq.com>"]
 description = "..."

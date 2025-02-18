@@ -2,8 +2,8 @@
 resolver = "2"
 members = ["projects/*"]
 default-members = [
-    "projects/dash-model",
-    "projects/sub_projects",
+    "projects/dash-scope",
+    "projects/aliyun-oss",
 ]
 exclude = [
     "projects/.DS_Store",
