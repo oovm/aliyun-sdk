@@ -1,6 +1,7 @@
 use reqwest::Error;
 use serde::{Deserialize, Serialize};
 use std::fmt::{Debug, Display, Formatter};
+use reqwest::header::CONTENT_TYPE;
 
 pub enum DashError {
     Network { message: String },
@@ -72,7 +73,7 @@ impl<'a> Application<'a> {
             .client
             .post(url)
             .bearer_auth(&self.host.api_key)
-            .header(header::CONTENT_TYPE, "application/json")
+            .header(CONTENT_TYPE, "application/json")
             .json(self)
             .send()
             .await?
