@@ -9,6 +9,10 @@ exclude = [
     "projects/.DS_Store",
 ]
 
+[workspace.dependencies.aliyun-error]
+version = "0.0.0"
+path = "projects/aliyun-error"
+
 [workspace.dependencies.reqwest]
 version = "0.12.12"
 default-features = false

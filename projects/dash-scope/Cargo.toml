@@ -1,11 +1,11 @@
 [package]
 name = "dashscope"
-version = "0.0.0"
+version = "0.0.1"
 authors = ["Aster <192607617@qq.com>"]
-description = "..."
+description = "阿里云灵积"
 categories = ["rust-patterns"]
-homepage = "https://github.com/oovm/RustTemplate"
-repository = "https://github.com/oovm/RustTemplate"
+homepage = "https://github.com/oovm/aliyun-sdk/tree/dev/"
+repository = "https://github.com/oovm/aliyun-sdk/tree/dev/projects/dash-scope"
 documentation = "https://docs.rs/sub_projects"
 readme = "readme.md"
 license = "MPL-2.0"
@@ -13,9 +13,12 @@ edition = "2021"
 exclude = ["package.json", "tests/**"]
 
 [dependencies]
-reqwest = { workspace = true }
+reqwest = { workspace = true, features = ["json"] }
 serde = { version = "1.0.217", features = ["derive"] }
 
+[dependencies.aliyun-error]
+workspace = true
+features = ["reqwest"]
 
 [dev-dependencies]
 

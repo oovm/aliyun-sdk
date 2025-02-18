@@ -24,6 +24,15 @@ impl Display for AliErrorKind {
             AliErrorKind::UnknownError => {
                 write!(f, "UnknownError")
             }
+            AliErrorKind::Network { message } => {
+                write!(f, "NetworkError: {message}")
+            }
         }
+    }
+}
+
+impl AliError {
+    pub fn network(message: impl Into<String>) -> Self {
+        AliErrorKind::Network { message: message.into() }.into()
     }
 }

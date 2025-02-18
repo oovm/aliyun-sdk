@@ -4,8 +4,15 @@
 #![doc(html_logo_url = "https://raw.githubusercontent.com/oovm/shape-rs/dev/projects/images/Trapezohedron.svg")]
 #![doc(html_favicon_url = "https://raw.githubusercontent.com/oovm/shape-rs/dev/projects/images/Trapezohedron.svg")]
 
-mod display;
 mod convert;
+
+mod display;
+
+/// 常用第三方库
+pub mod third_party {
+    #[cfg(feature = "reqwest")]
+    pub use reqwest;
+}
 
 /// The result type of this crate.
 pub type Result<T> = std::result::Result<T, AliError>;
@@ -17,10 +24,11 @@ pub struct AliError {
 }
 
 /// The kind of [AliError].
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Clone)]
 pub enum AliErrorKind {
     /// An unknown error.
-    UnknownError
+    UnknownError,
+    Network {
+        message: String,
+    },
 }
-
-
