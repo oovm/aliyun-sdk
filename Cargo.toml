@@ -2,6 +2,7 @@
 resolver = "2"
 members = ["projects/*"]
 default-members = [
+    "projects/dash-model",
     "projects/sub_projects",
 ]
 exclude = [
@@ -9,6 +10,11 @@ exclude = [
 ]
 
 [workspace.dependencies]
+
+[workspace.dependencies.reqwest]
+version = "0.12.12"
+default-features = false
+features = ["rustls-tls", "socks"]
 
 [profile.release]
 lto = true
