@@ -21,15 +21,22 @@ version = "0.0.0"
 path = "../aliyun-oss"
 optional = true
 
+[dependencies.aliyun-sms]
+version = "0.0.0"
+path = "../aliyun-sms"
+optional = true
+
+[dependencies.aliyun-dns]
+version = "0.0.0"
+path = "../aliyun-dns"
+optional = true
+
 [dependencies.aliyun-smtp]
 version = "0.0.0"
 path = "../aliyun-smtp"
 optional = true
 
-[dependencies.aliyun-sms]
-version = "0.0.0"
-path = "../aliyun-sms"
-optional = true
+
 
 [features]
 default = []

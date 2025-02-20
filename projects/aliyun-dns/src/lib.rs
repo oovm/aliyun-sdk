@@ -2,6 +2,7 @@
 
 // Include the rest of the crate's implementation here.
 use anyhow::{Context, Result};
+use base64::Engine;
 use chrono::Utc;
 use hmac::{Hmac, Mac};
 use reqwest::{Client, Response};
@@ -9,7 +10,6 @@ use serde::Deserialize;
 use sha1::Sha1;
 use std::collections::HashMap;
 use url::Url;
-use base64::Engine;
 
 /// An enum representing the API response, containing either a successful result or an error.
 ///
@@ -95,14 +95,13 @@ pub struct RecordResponse {
 }
 
 /// A struct representing the AliyunDns API client.
-pub struct AliyunDns {
-    access_key_id: String,
-    access_key_secret: String,
-    client: Client,
+pub struct AlibabaDNS {
+    pub access_key: String,
+    pub access_secret: String,
 }
 
 // Implement methods for AliyunDns struct
-impl AliyunDns {
+impl AlibabaDNS {
     /// Creates a new `AliyunDns` client with the provided access key ID and access key secret.
     ///
     /// # Arguments
@@ -113,17 +112,12 @@ impl AliyunDns {
     /// # Examples
     ///
     /// ```
-    /// use aliyun_dns::AliyunDns;
+    /// use aliyun_dns::AlibabaDNS;
     ///
-    /// let aliyun_dns = AliyunDns::new("your_access_key_id", "your_access_key_secret");
+    /// let aliyun_dns = AlibabaDNS::new("your_access_key_id", "your_access_key_secret");
     /// ```
     pub fn new(access_key_id: String, access_key_secret: String) -> Self {
-        let client = Client::new();
-        AliyunDns {
-            access_key_id,
-            access_key_secret,
-            client,
-        }
+        AlibabaDNS { access_key: access_key_id, access_secret: access_key_secret }
     }
 
     /// Adds a new domain record.
@@ -142,17 +136,18 @@ impl AliyunDns {
     /// # Examples
     ///
     /// ```
-    /// use aliyun_dns::{AliyunDns, RecordResponse};
+    /// use aliyun_dns::{AlibabaDNS, RecordResponse};
     ///
-    /// let aliyun_dns = AliyunDns::new("your_access_key_id", "your_access_key_secret");
-    /// let result: Result<RecordResponse, _> = aliyun_dns.add_domain_record("example.com", "www", "A", "192.0.2.1").await;
+    /// let aliyun_dns = AlibabaDNS::new("your_access_key_id", "your_access_key_secret");
+    /// let result: Result<RecordResponse, _> =
+    ///     aliyun_dns.add_domain_record("example.com", "www", "A", "192.0.2.1").await;
     /// ```
     pub async fn add_domain_record(
         &self,
         domain_name: &str,
         sub_domain: &str,
         record_type: &str,
-        record_value: &str
+        record_value: &str,
     ) -> Result<RecordResponse> {
         let action = "AddDomainRecord";
         let mut params = HashMap::new();
@@ -160,7 +155,7 @@ impl AliyunDns {
         params.insert("RR", sub_domain);
         params.insert("Type", record_type);
         params.insert("Value", record_value);
-        
+
         self.send_request(action, params).await
     }
 
@@ -178,21 +173,18 @@ impl AliyunDns {
     /// # Examples
     ///
     /// ```
-    /// use aliyun_dns::{AliyunDns, DeleteSubDomainRecordsResponse};
+    /// use aliyun_dns::{AlibabaDNS, DeleteSubDomainRecordsResponse};
     ///
-    /// let aliyun_dns = AliyunDns::new("your_access_key_id", "your_access_key_secret");
-    /// let result: Result<DeleteSubDomainRecordsResponse, _> = aliyun_dns.delete_subdomain_records("example.com", "www").await;
+    /// let aliyun_dns = AlibabaDNS::new("your_access_key_id", "your_access_key_secret");
+    /// let result: Result<DeleteSubDomainRecordsResponse, _> =
+    ///     aliyun_dns.delete_subdomain_records("example.com", "www").await;
     /// ```
-    pub async fn delete_subdomain_records(
-        &self,
-        domain_name: &str,
-        rr: &str,
-    ) -> Result<DeleteSubDomainRecordsResponse> {
+    pub async fn delete_subdomain_records(&self, domain_name: &str, rr: &str) -> Result<DeleteSubDomainRecordsResponse> {
         let action = "DeleteSubDomainRecords";
         let mut params = HashMap::new();
         params.insert("DomainName", domain_name);
         params.insert("RR", rr);
-        
+
         self.send_request(action, params).await
     }
 
@@ -209,19 +201,16 @@ impl AliyunDns {
     /// # Examples
     ///
     /// ```
-    /// use aliyun_dns::{AliyunDns, RecordResponse};
+    /// use aliyun_dns::{AlibabaDNS, RecordResponse};
     ///
-    /// let aliyun_dns = AliyunDns::new("your_access_key_id", "your_access_key_secret");
+    /// let aliyun_dns = AlibabaDNS::new("your_access_key_id", "your_access_key_secret");
     /// let result: Result<RecordResponse, _> = aliyun_dns.delete_domain_record("record_id").await;
     /// ```
-    pub async fn delete_domain_record(
-        &self,
-        record_id: &str,
-    ) -> Result<RecordResponse> {
+    pub async fn delete_domain_record(&self, record_id: &str) -> Result<RecordResponse> {
         let action = "DeleteDomainRecord";
         let mut params = HashMap::new();
         params.insert("RecordId", record_id);
-        
+
         self.send_request(action, params).await
     }
 
@@ -241,10 +230,11 @@ impl AliyunDns {
     /// # Examples
     ///
     /// ```
-    /// use aliyun_dns::{AliyunDns, RecordResponse};
+    /// use aliyun_dns::{AlibabaDNS, RecordResponse};
     ///
-    /// let aliyun_dns = AliyunDns::new("your_access_key_id", "your_access_key_secret");
-    /// let result: Result<RecordResponse, _> = aliyun_dns.update_domain_record("record_id", "www", "A", "192.0.2.1").await;
+    /// let aliyun_dns = AlibabaDNS::new("your_access_key_id", "your_access_key_secret");
+    /// let result: Result<RecordResponse, _> =
+    ///     aliyun_dns.update_domain_record("record_id", "www", "A", "192.0.2.1").await;
     /// ```
     pub async fn update_domain_record(
         &self,
@@ -259,7 +249,7 @@ impl AliyunDns {
         params.insert("RR", sub_domain);
         params.insert("Type", record_type);
         params.insert("Value", value);
-        
+
         self.send_request(action, params).await
     }
 
@@ -279,7 +269,8 @@ impl AliyunDns {
     /// use my_crate::{AliyunDns, DomainRecordsResponse};
     ///
     /// let aliyun_dns = AliyunDns::new("your_access_key_id", "your_access_key_secret");
-    /// let result: Result<DomainRecordsResponse, _> = aliyun_dns.query_domain_records("example.com").await;
+    /// let result: Result<DomainRecordsResponse, _> =
+    ///     aliyun_dns.query_domain_records("example.com").await;
     /// ```
     pub async fn query_domain_records(&self, domain_name: &str) -> Result<DomainRecordsResponse> {
         let action = "DescribeDomainRecords";
@@ -300,16 +291,12 @@ impl AliyunDns {
     /// A `Result` containing the deserialized response if the operation is successful, or an error if the operation fails.
     ///
     /// This function is used internally by the `aliyun_dns` crate and is not part of the public API.
-    async fn send_request<T: for<'de> Deserialize<'de>>(
-        &self,
-        action: &str,
-        mut params: HashMap<&str, &str>,
-    ) -> Result<T> {
+    async fn send_request<T: for<'de> Deserialize<'de>>(&self, action: &str, mut params: HashMap<&str, &str>) -> Result<T> {
         let url = "https://alidns.aliyuncs.com/";
         let nonce = format!("{}", rand::random::<u64>());
         let now = Utc::now().format("%Y-%m-%dT%H:%M:%SZ").to_string();
 
-        params.insert("AccessKeyId", &self.access_key_id);
+        params.insert("AccessKeyId", &self.access_key);
         params.insert("Action", action);
         params.insert("Format", "JSON");
         params.insert("Version", "2015-01-09");
@@ -323,7 +310,7 @@ impl AliyunDns {
         url.query_pairs_mut().extend_pairs(params.into_iter());
         url.query_pairs_mut().append_pair("Signature", &signature);
 
-        let response = self.client.get(url).send().await?;
+        let response = Client::new().get(url).send().await?;
         self.handle_response(response).await
     }
 
@@ -343,27 +330,17 @@ impl AliyunDns {
         keys.sort();
         let canonical_query_string = keys
             .iter()
-            .map(|key| {
-                format!(
-                    "{}={}",
-                    percent_encode(key),
-                    percent_encode(params.get(key).unwrap())
-                )
-            })
+            .map(|key| format!("{}={}", percent_encode(key), percent_encode(params.get(key).unwrap())))
             .collect::<Vec<String>>()
             .join("&");
 
-        let string_to_sign = format!(
-            "GET&{}&{}",
-            percent_encode("/"),
-            percent_encode(&canonical_query_string)
-        );
-        let signature_key = format!("{}&", self.access_key_secret);
+        let string_to_sign = format!("GET&{}&{}", percent_encode("/"), percent_encode(&canonical_query_string));
+        let signature_key = format!("{}&", self.access_secret);
         let mut mac = Hmac::<Sha1>::new_from_slice(signature_key.as_bytes()).unwrap();
         mac.update(string_to_sign.as_bytes());
         let result = mac.finalize();
         let signature = base64::engine::general_purpose::STANDARD.encode(result.into_bytes());
-    
+
         signature
     }
 
@@ -378,26 +355,19 @@ impl AliyunDns {
     /// A `Result` containing the deserialized response if the operation is successful, or an error if the operation fails.
     ///
     /// This function is used internally by the `aliyun_dns` crate and is not part of the public API.
-    async fn handle_response<T: for<'de> Deserialize<'de>>(
-        &self,
-        response: Response,
-    ) -> Result<T> {
+    async fn handle_response<T: for<'de> Deserialize<'de>>(&self, response: Response) -> Result<T> {
         // let status = response.status();
         // if !status.is_success() {
         //     return Err(anyhow::anyhow!("Request failed with status: {}", status));
         // }
-    
+
         let response_text = response.text().await?;
-        let response_data: ApiResponse<T> = serde_json::from_str(&response_text)
-            .context(format!("Failed to parse JSON response: {}", response_text))?;
-    
+        let response_data: ApiResponse<T> =
+            serde_json::from_str(&response_text).context(format!("Failed to parse JSON response: {}", response_text))?;
+
         match response_data {
             ApiResponse::Success(result) => Ok(result),
-            ApiResponse::Error {
-                request_id,
-                error_code,
-                error_message,
-            } => Err(anyhow::anyhow!(
+            ApiResponse::Error { request_id, error_code, error_message } => Err(anyhow::anyhow!(
                 "API error: Request ID: {}, Code: {}, Message: {}",
                 request_id,
                 error_code.unwrap_or_default(),
@@ -405,7 +375,6 @@ impl AliyunDns {
             )),
         }
     }
-
 }
 
 fn percent_encode(input: &str) -> String {
@@ -413,7 +382,8 @@ fn percent_encode(input: &str) -> String {
     for byte in input.as_bytes() {
         if *byte == b'*' {
             encoded.push_str("%2A");
-        } else {
+        }
+        else {
             let temp = url::form_urlencoded::byte_serialize(&[*byte]).collect::<String>();
             encoded.push_str(&temp);
         }
@@ -433,9 +403,6 @@ mod tests {
         assert_eq!(percent_encode("a b"), "a+b".to_string());
         assert_eq!(percent_encode("*"), "%2A".to_string());
         assert_eq!(percent_encode("%"), "%25".to_string());
-        assert_eq!(
-            percent_encode("你好"),
-            "%E4%BD%A0%E5%A5%BD".to_string()
-        );
+        assert_eq!(percent_encode("你好"), "%E4%BD%A0%E5%A5%BD".to_string());
     }
 }
