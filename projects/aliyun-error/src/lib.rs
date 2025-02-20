@@ -9,7 +9,9 @@ mod convert;
 mod display;
 
 /// 常用第三方库
-pub mod third_party {
+pub mod party_3rd {
+    #[cfg(feature = "lettre")]
+    pub use lettre;
     #[cfg(feature = "reqwest")]
     pub use reqwest;
 }
@@ -23,27 +25,49 @@ pub struct AliError {
     kind: Box<AliErrorKind>,
 }
 
-/// The kind of [AliError].
+/// 枚举定义阿里云服务中可能发生的错误类型
 #[derive(Debug, Clone)]
 pub enum AliErrorKind {
-    /// An unknown error.
-    UnknownError,
+    /// 服务器错误
     ServiceError {
-        message: String
+        /// 错误信息
+        message: String,
     },
+    /// 网络错误
     NetworkError {
+        /// 错误信息
         message: String,
     },
-    CustomError {
+    /// 编码错误
+    EncoderError {
+        /// 错误编码格式
+        format: String,
+        /// 错误信息
         message: String,
-    }
+    },
+    /// 解码错误
+    DecoderError {
+        /// 错误解码格式
+        format: String,
+        /// 错误信息
+        message: String,
+    },
+    /// 自定义错误
+    CustomError {
+        /// 错误信息
+        message: String,
+    },
+    /// 未知错误
+    UnknownError,
 }
 
-
 impl AliError {
+    /// 创建一个网络错误
+    pub fn network_error(message: impl Into<String>) -> Self {
+        AliErrorKind::NetworkError { message: message.into() }.into()
+    }
+    /// 创建一个自定义错误
     pub fn custom_error(message: impl Into<String>) -> Self {
-        AliError {
-            kind: Box::new(AliErrorKind::CustomError { message: message.into() }),
-        }
+        AliError { kind: Box::new(AliErrorKind::CustomError { message: message.into() }) }
     }
 }

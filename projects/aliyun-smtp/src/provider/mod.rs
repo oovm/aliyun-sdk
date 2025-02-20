@@ -1,10 +1,10 @@
 use crate::EmailSender;
-use lettre::{
-    Message, SmtpTransport, Transport,
-    error::Error,
-    transport::smtp::{authentication::Credentials, response::Response},
+use aliyun_error::party_3rd::lettre::{
+    transport::smtp::{authentication::Credentials, response::Response}, Message,
+    SmtpTransport,
+    Transport,
 };
-use poem::{FromRequest, Request, RequestBody, error::GetDataError};
+use poem::{error::GetDataError, FromRequest, Request, RequestBody};
 
 mod aliyun;
 

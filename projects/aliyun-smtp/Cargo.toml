@@ -14,11 +14,10 @@ exclude = ["package.json", "tests/**"]
 
 [dependencies]
 poem = "3.1.6"
-lettre = { version = "0.11.13", default-features = false, features = ["rustls-tls", "builder", "smtp-transport"] }
 
 [dependencies.aliyun-error]
 workspace = true
-features = ["reqwest"]
+features = ["lettre"]
 
 [dev-dependencies]
 

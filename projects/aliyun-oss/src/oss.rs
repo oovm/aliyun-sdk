@@ -67,14 +67,7 @@ impl<'a> AlibabaOSS {
         let bucket = std::env::var("OSS_BUCKET").expect("OSS_BUCKET not found");
         AlibabaOSS::new(key_id, key_secret, endpoint, bucket)
     }
-
-    #[cfg(feature = "debug-print")]
-    pub fn open_debug(&self) {
-        std::env::set_var("RUST_LOG", "oss=debug");
-        tracing_subscriber::fmt().with_max_level(tracing::Level::DEBUG).with_line_number(true).init();
-    }
-    #[cfg(not(feature = "debug-print"))]
-    pub fn open_debug(&self) {}
+    
     pub fn new<S: Into<String>>(key_id: S, key_secret: S, endpoint: S, bucket: S) -> Self {
         AlibabaOSS { access_key_id: key_id.into(), access_secret: key_secret.into(), endpoint: endpoint.into(), bucket: bucket.into() }
     }

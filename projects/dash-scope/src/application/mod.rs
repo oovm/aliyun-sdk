@@ -147,7 +147,7 @@ impl ApplicationResponse {
     pub fn as_result(self) -> Result<ApplicationOutput, AliError> {
         match self.output {
             Some(s) => Ok(s),
-            None => Err(AliError::network(self.message)),
+            None => Err(AliError::network_error(self.message)),
         }
     }
 }

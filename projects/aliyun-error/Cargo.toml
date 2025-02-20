@@ -15,6 +15,12 @@ exclude = ["package.json", "tests/**"]
 [dependencies]
 reqwest = { workspace = true, optional = true }
 
+[dependencies.lettre]
+version = "0.11.13"
+default-features = false
+features = ["rustls-tls", "builder", "smtp-transport"]
+optional = true
+
 [dev-dependencies]
 
 [features]

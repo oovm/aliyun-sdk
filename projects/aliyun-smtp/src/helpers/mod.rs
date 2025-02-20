@@ -1,22 +1,25 @@
-use lettre::{
-    Message,
-    error::Error,
-    message::{Mailbox, header::ContentType},
-    transport::smtp::response::Response,
+use aliyun_error::{
+    party_3rd::lettre::{
+        message::{header::ContentType, Mailbox}
+        ,
+        transport::smtp::response::Response,
+        Message,
+    },
+    AliError,
 };
-use std::{borrow::Cow, io::ErrorKind, str::FromStr};
+use std::{borrow::Cow, str::FromStr};
 
 pub trait EmailSender {
-    fn send_message(&self, message: &Message) -> Result<Response, Error>;
+    fn send_message(&self, message: &Message) -> Result<Response, AliError>;
 
     fn company_name(&self) -> Cow<str>;
     fn sender_mail(&self) -> Mailbox;
-    fn login_code(&self, receiver: &str, code: &str, unsubscribe: &str) -> Result<Response, Error> {
+    fn login_code(&self, receiver: &str, code: &str, unsubscribe: &str) -> Result<Response, AliError> {
         let subject = match self.company_name().as_ref() {
             "" => "登录验证".to_string(),
             s => format!("【{}】 登录验证", s),
         };
-        let receiver = Mailbox::from_str(receiver).map_err(|e| Error::Io(std::io::Error::new(ErrorKind::InvalidInput, e)))?;
+        let receiver = Mailbox::from_str(receiver)?;
         let message = Message::builder()
             .from(self.sender_mail())
             .reply_to(self.sender_mail())

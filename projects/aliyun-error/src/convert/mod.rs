@@ -2,6 +2,8 @@ use super::*;
 
 #[cfg(feature = "reqwest")]
 mod for_reqwest;
+#[cfg(feature = "lettre")]
+mod for_lettre;
 
 impl From<AliErrorKind> for AliError {
     fn from(error: AliErrorKind) -> Self {

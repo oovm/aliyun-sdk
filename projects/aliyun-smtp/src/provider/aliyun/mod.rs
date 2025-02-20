@@ -1,6 +1,7 @@
 use super::*;
-use lettre::message::Mailbox;
-use std::{borrow::Cow, io::ErrorKind, str::FromStr};
+use aliyun_error::AliError;
+use aliyun_error::party_3rd::lettre::message::Mailbox;
+use std::{borrow::Cow, str::FromStr};
 
 #[derive(Clone, Debug)]
 pub struct AlibabaSMTP {
@@ -10,11 +11,11 @@ pub struct AlibabaSMTP {
 }
 
 impl AlibabaSMTP {
-    pub fn login(username:  impl Into<String>, password:  impl Into<String>) -> Result<Self, Error> {
+    pub fn login(username:  impl Into<String>, password:  impl Into<String>) -> Result<Self, AliError> {
         let username = username.into();
         let creds = Credentials::new(username.clone(), password.into());
-        let mailer = SmtpTransport::relay("smtpdm.aliyun.com").unwrap();
-        let sender = Mailbox::from_str(&username).map_err(|e| Error::Io(std::io::Error::new(ErrorKind::InvalidInput, e)))?;
+        let mailer = SmtpTransport::relay("smtpdm.aliyun.com")?;
+        let sender = Mailbox::from_str(&username)?;
         Ok(Self { smtp: mailer.credentials(creds).build(), company: Cow::Borrowed(""), sender })
     }
     pub fn with_company(mut self, company: &str) -> Self {
@@ -28,8 +29,8 @@ impl AlibabaSMTP {
 }
 
 impl EmailSender for AlibabaSMTP {
-    fn send_message(&self, message: &Message) -> Result<Response, Error> {
-        self.smtp.send(message).map_err(|e| Error::Io(std::io::Error::new(std::io::ErrorKind::Interrupted, e)))
+    fn send_message(&self, message: &Message) -> Result<Response, AliError> {
+        Ok(self.smtp.send(message)?)
     }
 
     fn company_name(&self) -> Cow<str> {

@@ -27,6 +27,12 @@ impl Display for AliErrorKind {
             AliErrorKind::NetworkError { message } => {
                 write!(f, "NetworkError: {message}")
             }
+            AliErrorKind::EncoderError { format, message } => {
+                write!(f, "EncoderError: {format} {message}")
+            }
+            AliErrorKind::DecoderError { format, message } => {
+                write!(f, "DecoderError: {format} {message}")
+            }
             AliErrorKind::CustomError { message } => {
                 write!(f, "CustomError: {message}")
             }
@@ -37,8 +43,3 @@ impl Display for AliErrorKind {
     }
 }
 
-impl AliError {
-    pub fn network(message: impl Into<String>) -> Self {
-        AliErrorKind::NetworkError { message: message.into() }.into()
-    }
-}
