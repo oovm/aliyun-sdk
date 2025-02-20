@@ -1,11 +1,4 @@
-# aliyun-oss-rust-sdk
-[![Latest Version](https://img.shields.io/crates/v/aliyun-oss-rust-sdk.svg)](https://crates.io/crates/aliyun-oss-rust-sdk)
-
-阿里云 © Alibaba Cloud Official Oss SDK (标准库)
-
-[![QQ群](https://img.shields.io/badge/QQ%E7%BE%A4-799168925-blue)](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=dLoye8pBcO60zGzqLjGO0l-GgMIaf6wQ&authKey=LfxBdZ5A%2F9eWJbKpzTcuWPjmQu5UdIJ3TVTpqRAQYkCID50WLkYoIXcGxGKzupG3&noverify=0&group_code=799168925)
-
-# 使用指南
+# 阿里云 OSS
 
 1. [文件下载](#文件下载)
 2. [签名下载](#签名下载)
