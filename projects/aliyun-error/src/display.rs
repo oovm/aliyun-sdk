@@ -21,11 +21,17 @@ impl Display for AliError {
 impl Display for AliErrorKind {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
+            AliErrorKind::ServiceError { message } => {
+                write!(f, "ServiceError: {message}")
+            }
+            AliErrorKind::NetworkError { message } => {
+                write!(f, "NetworkError: {message}")
+            }
+            AliErrorKind::CustomError { message } => {
+                write!(f, "CustomError: {message}")
+            }
             AliErrorKind::UnknownError => {
                 write!(f, "UnknownError")
-            }
-            AliErrorKind::Network { message } => {
-                write!(f, "NetworkError: {message}")
             }
         }
     }
@@ -33,6 +39,6 @@ impl Display for AliErrorKind {
 
 impl AliError {
     pub fn network(message: impl Into<String>) -> Self {
-        AliErrorKind::Network { message: message.into() }.into()
+        AliErrorKind::NetworkError { message: message.into() }.into()
     }
 }

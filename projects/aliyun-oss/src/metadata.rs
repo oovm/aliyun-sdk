@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use chrono::{DateTime, Utc};
 use reqwest::header::HeaderMap;
-use crate::debug;
+use tracing::debug;
 
 #[derive(Debug)]
 pub struct ObjectMetadata {

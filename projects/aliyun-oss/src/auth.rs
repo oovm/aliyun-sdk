@@ -2,7 +2,7 @@ use base64::Engine;
 use base64::engine::general_purpose;
 use hmac::{Hmac, Mac};
 use reqwest::header::DATE;
-use crate::debug;
+use tracing::debug;
 use crate::oss::{API, OSS, OSSInfo};
 use crate::request::{RequestBuilder};
 

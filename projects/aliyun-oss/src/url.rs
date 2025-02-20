@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use reqwest::header::DATE;
+use tracing::debug;
 use crate::auth::AuthAPI;
-use crate::debug;
 use crate::oss::{API, OSS, OSSInfo};
 use crate::request::{RequestBuilder, RequestType};
 

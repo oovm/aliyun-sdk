@@ -28,7 +28,22 @@ pub struct AliError {
 pub enum AliErrorKind {
     /// An unknown error.
     UnknownError,
-    Network {
+    ServiceError {
+        message: String
+    },
+    NetworkError {
         message: String,
     },
+    CustomError {
+        message: String,
+    }
+}
+
+
+impl AliError {
+    pub fn custom_error(message: impl Into<String>) -> Self {
+        AliError {
+            kind: Box::new(AliErrorKind::CustomError { message: message.into() }),
+        }
+    }
 }

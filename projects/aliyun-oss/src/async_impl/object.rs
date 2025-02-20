@@ -1,10 +1,11 @@
 use hmac::Hmac;
 use sha1::digest::Mac;
+use tracing::debug;
+use aliyun_error::AliError;
 use crate::entity::{PolicyBuilder, PolicyResp};
-use crate::error::OssError;
 use crate::oss::{OSSInfo, API, OSS};
 use crate::request::{RequestBuilder, RequestType};
-use crate::{debug, util};
+use crate::{ util};
 use crate::metadata::ObjectMetadata;
 use crate::util::read_file;
 
@@ -25,11 +26,11 @@ impl OSS {
         &self,
         key: S,
         build: RequestBuilder,
-    ) -> Result<Vec<u8>, OssError> {
+    ) -> Result<Vec<u8>, AliError> {
         let key = self.format_key(key);
         let (url, headers) = self
             .build_request(key.as_str(), build)
-            .map_err(|e| OssError::Err(format!("build request error: {}", e)))?;
+            .map_err(|e| AliError::custom_error(format!("build request error: {}", e)))?;
         debug!("oss logget object url: {} headers: {:?}", url,headers);
         let client = reqwest::Client::new();
         let response = client.get(url).headers(headers).send().await?;
@@ -40,7 +41,7 @@ impl OSS {
             let status = response.status();
             let result = response.text().await?;
             debug!("oss log: get object status: {} error: {}", status,result);
-            Err(OssError::Err(format!(
+            Err(AliError::custom_error(format!(
                 "get object status: {} error: {}",
                 status, result
             )))
@@ -65,7 +66,7 @@ impl OSS {
     /// //key为上传的文件名包含路径、例如：upload/mydir/test.txt
     /// //file为上传的文件，类型跟with_content_type一致
     /// ```
-    pub fn get_upload_object_policy(&self, build: PolicyBuilder) -> Result<PolicyResp, OssError> {
+    pub fn get_upload_object_policy(&self, build: PolicyBuilder) -> Result<PolicyResp, AliError> {
         let date = chrono::Local::now().naive_local() + chrono::Duration::seconds(build.expire);
         let date_str = date.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string();
         let mut json_data = r#"
@@ -99,7 +100,7 @@ impl OSS {
         debug!("oss log: policy json: {}", json_data);
         let base64_policy = util::base64_encode(json_data.as_bytes());
         let mut hasher: Hmac<sha1::Sha1> = Hmac::new_from_slice(self.key_secret().as_bytes())
-            .map_err(|_| OssError::Err("Hmac new from slice error".to_string()))?;
+            .map_err(|_| AliError::custom_error("Hmac new from slice error".to_string()))?;
         hasher.update(base64_policy.as_bytes());
         let signature = util::base64_encode(&hasher.finalize().into_bytes());
         Ok(PolicyResp {
@@ -127,14 +128,14 @@ impl OSS {
         key: S,
         file_path: S,
         build: RequestBuilder,
-    ) -> Result<(), OssError> {
+    ) -> Result<(), AliError> {
         let buffer = read_file(file_path)?;
         let mut build = build.clone();
         build.method = RequestType::Put;
         let key = self.format_key(key);
         let (url, headers) = self
             .build_request(key.as_str(), build)
-            .map_err(|e| OssError::Err(format!("build request error: {}", e)))?;
+            .map_err(|e| AliError::custom_error(format!("build request error: {}", e)))?;
         debug!("oss log: put object from file: {} headers: {:?}", url,headers);
         let client = reqwest::Client::new();
         let response = client.put(url).headers(headers).body(buffer).send().await?;
@@ -144,7 +145,7 @@ impl OSS {
             let status = response.status();
             let result = response.text().await?;
             debug!("oss log: get object status: {} error: {}", status,result);
-            Err(OssError::Err(format!(
+            Err(AliError::custom_error(format!(
                 "get object status: {} error: {}",
                 status, result
             )))
@@ -168,13 +169,13 @@ impl OSS {
         key: S,
         buffer: &[u8],
         build: RequestBuilder,
-    ) -> Result<(), OssError> {
+    ) -> Result<(), AliError> {
         let mut build = build.clone();
         build.method = RequestType::Put;
         let key = self.format_key(key);
         let (url, headers) = self
             .build_request(key.as_str(), build)
-            .map_err(|e| OssError::Err(format!("build request error: {}", e)))?;
+            .map_err(|e| AliError::custom_error(format!("build request error: {}", e)))?;
         debug!("oss log: put object from file: {} headers: {:?}", url,headers);
         let client = reqwest::Client::new();
         let response = client
@@ -189,7 +190,7 @@ impl OSS {
             let status = response.status();
             let result = response.text().await?;
             debug!("oss log: get object status: {} error: {}", status,result);
-            Err(OssError::Err(format!(
+            Err(AliError::custom_error(format!(
                 "get object status: {} error: {}",
                 status, result
             )))
@@ -210,13 +211,13 @@ impl OSS {
         &self,
         key: S,
         build: RequestBuilder,
-    ) -> Result<(), OssError> {
+    ) -> Result<(), AliError> {
         let mut build = build.clone();
         build.method = RequestType::Delete;
         let key = self.format_key(key);
         let (url, headers) = self
             .build_request(key.as_str(), build)
-            .map_err(|e| OssError::Err(format!("build request error: {}", e)))?;
+            .map_err(|e| AliError::custom_error(format!("build request error: {}", e)))?;
         debug!("oss log: put object from file: {} headers: {:?}", url,headers);
         let client = reqwest::Client::new();
         let response = client.delete(url).headers(headers).send().await?;
@@ -226,7 +227,7 @@ impl OSS {
             let status = response.status();
             let result = response.text().await?;
             debug!("oss log: get object status: {} error: {}", status,result);
-            Err(OssError::Err(format!(
+            Err(AliError::custom_error(format!(
                 "get object status: {} error: {}",
                 status, result
             )))
@@ -244,12 +245,12 @@ impl OSS {
     /// let metadata = oss.get_object_metadata("/hello.txt", builder).await.unwrap();
     /// println!("{:?}", metadata);
     /// ```
-    pub async fn get_object_metadata<S: AsRef<str>>(&self, key: S, build: RequestBuilder) -> Result<ObjectMetadata, OssError>{
+    pub async fn get_object_metadata<S: AsRef<str>>(&self, key: S, build: RequestBuilder) -> Result<ObjectMetadata, AliError>{
         let mut build = build.clone();
         build.method = RequestType::Head;
         let key = self.format_key(key);
         let (url, headers) = self.build_request(key.as_str(), build)
-            .map_err(|e| OssError::Err(format!("build request error: {}", e)))?;
+            .map_err(|e| AliError::custom_error(format!("build request error: {}", e)))?;
         debug!("put object from file: {} headers: {:?}", url,headers);
         let client = reqwest::Client::new();
         let response = client.head(url)
@@ -263,7 +264,7 @@ impl OSS {
             let status = response.status();
             let result = response.text().await?;
             debug!("get object status: {} error: {}", status,result);
-            Err(OssError::Err(format!("get object status: {} error: {}", status, result)))
+            Err(AliError::custom_error(format!("get object status: {} error: {}", status, result)))
         };
     }
 }

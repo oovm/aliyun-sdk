@@ -154,10 +154,10 @@ impl<'a> OSS {
 
 #[cfg(test)]
 mod tests {
-    use crate::error::OssError;
+    use crate::error::AliError;
     use std::io::Read;
 
-    fn open_file(file_name: &str) -> Result<String, OssError> {
+    fn open_file(file_name: &str) -> Result<String, AliError> {
         let mut file = std::fs::File::open(file_name)?;
         let mut contents = String::new();
         file.read_to_string(&mut contents)?;

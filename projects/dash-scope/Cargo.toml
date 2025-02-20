@@ -14,7 +14,7 @@ exclude = ["package.json", "tests/**"]
 
 [dependencies]
 reqwest = { workspace = true, features = ["json"] }
-serde = { version = "1.0.217", features = ["derive"] }
+serde = { version = "1.0.218", features = ["derive"] }
 
 [dependencies.aliyun-error]
 workspace = true
