@@ -4,3 +4,5 @@ pub mod provider;
 
 pub use crate::helpers::EmailSender;
 pub use lettre;
+
+pub use crate::provider::AliyunMailer;

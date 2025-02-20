@@ -3,13 +3,13 @@ use sha1::digest::Mac;
 use tracing::debug;
 use aliyun_error::AliError;
 use crate::entity::{PolicyBuilder, PolicyResp};
-use crate::oss::{OSSInfo, API, OSS};
+use crate::oss::{OSSInfo, API, AlibabaOSS};
 use crate::request::{RequestBuilder, RequestType};
 use crate::{ util};
 use crate::metadata::ObjectMetadata;
 use crate::util::read_file;
 
-impl OSS {
+impl AlibabaOSS {
     /// 获取对象
     ///
     /// # 使用例子

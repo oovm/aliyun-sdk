@@ -1,9 +1,9 @@
 use rand::prelude::*;
-use aliyun_sms::aliyun::Aliyun;
+use aliyun_sms::aliyun::AlibabaSMS;
 
 #[tokio::test]
 async fn send_sms() {
-    let aliyun = Aliyun::new("xxxx", "xxxx");
+    let aliyun = AlibabaSMS::new("xxxx", "xxxx");
 
     let mut rng = rand::thread_rng();
     let code = format!(

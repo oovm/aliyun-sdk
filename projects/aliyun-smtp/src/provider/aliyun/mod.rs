@@ -10,10 +10,11 @@ pub struct AliyunMailer {
 }
 
 impl AliyunMailer {
-    pub fn login(username: &str, password: &str) -> Result<Self, Error> {
-        let creds = Credentials::new(username.to_string(), password.to_string());
+    pub fn login(username:  impl Into<String>, password:  impl Into<String>) -> Result<Self, Error> {
+        let username = username.into();
+        let creds = Credentials::new(username.clone(), password.into());
         let mailer = SmtpTransport::relay("smtpdm.aliyun.com").unwrap();
-        let sender = Mailbox::from_str(username).map_err(|e| Error::Io(std::io::Error::new(ErrorKind::InvalidInput, e)))?;
+        let sender = Mailbox::from_str(&username).map_err(|e| Error::Io(std::io::Error::new(ErrorKind::InvalidInput, e)))?;
         Ok(Self { smtp: mailer.credentials(creds).build(), company: Cow::Borrowed(""), sender })
     }
     pub fn with_company(mut self, company: &str) -> Self {

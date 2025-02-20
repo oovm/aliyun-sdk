@@ -3,7 +3,7 @@ use base64::engine::general_purpose;
 use hmac::{Hmac, Mac};
 use reqwest::header::DATE;
 use tracing::debug;
-use crate::oss::{API, OSS, OSSInfo};
+use crate::oss::{API, AlibabaOSS, OSSInfo};
 use crate::request::{RequestBuilder};
 
 pub trait AuthAPI {
@@ -20,7 +20,7 @@ pub trait AuthAPI {
     ) -> String;
 }
 
-impl<'a> AuthAPI for OSS {
+impl<'a> AuthAPI for AlibabaOSS {
     fn sign<S: AsRef<str>>(
         &self,
         key: S,

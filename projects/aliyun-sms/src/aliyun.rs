@@ -3,7 +3,6 @@
 //! **阿里云短信sdk**
 //!
 //! 目前实现了发送短信功能
-//!
 
 use chrono::{SecondsFormat, Utc};
 use ring::hmac;
@@ -24,12 +23,12 @@ const SIGNATURE_METHOD: &str = "HMAC-SHA1";
 const FORMAT: &str = "json";
 
 /// aliyun sms
-pub struct Aliyun<'a> {
-    access_key_id: &'a str,
-    access_secret: &'a str,
+pub struct AlibabaSMS<'a> {
+    pub access_key_id: &'a str,
+    pub access_secret: &'a str,
 }
 
-impl<'a> Aliyun<'a> {
+impl<'a> AlibabaSMS<'a> {
     /// init access key
     /// 初始化密钥
     ///
@@ -37,34 +36,25 @@ impl<'a> Aliyun<'a> {
     /// use sms::aliyun::Aliyun;
     ///
     /// let aliyun = Aliyun::new("xxxx", "xxxx");
-    ///
     /// ```
     pub fn new(access_key_id: &'a str, access_secret: &'a str) -> Self {
-        Self {
-            access_key_id,
-            access_secret,
-        }
+        Self { access_key_id, access_secret }
     }
 
     /// send_sms
     /// 发送短信
     ///
     /// ```rust,no_run
-    /// use sms::aliyun::Aliyun;
     /// use rand::prelude::*;
+    /// use sms::aliyun::Aliyun;
     ///
     /// let aliyun = Aliyun::new("xxxx", "xxxx");
     ///
     /// let mut rng = rand::thread_rng();
-    /// let code = format!(
-    ///     r#"{{"code":"{}","product":"EchoLi"}}"#,
-    ///     rng.gen_range(1000..=9999)
-    /// );
+    /// let code = format!(r#"{{"code":"{}","product":"EchoLi"}}"#, rng.gen_range(1000..=9999));
     ///
-    /// let resp = aliyun
-    ///     .send_sms("18888888888", "登录验证", "SMS_123456", code.as_str())
-    ///     .await
-    ///     .unwrap();
+    /// let resp =
+    ///     aliyun.send_sms("18888888888", "登录验证", "SMS_123456", code.as_str()).await.unwrap();
     ///
     /// println!("{:?}", resp);
     /// ```
@@ -89,23 +79,11 @@ impl<'a> Aliyun<'a> {
         let canonicalize_query_string = self.canonicalize_query_string(&params);
 
         // 构造签名字符串
-        let signature = self.signature(
-            format!(
-                "GET&%2F&{}",
-                urlencoding::encode(&canonicalize_query_string)
-            )
-            .as_bytes(),
-        );
+        let signature = self.signature(format!("GET&%2F&{}", urlencoding::encode(&canonicalize_query_string)).as_bytes());
 
-        let url = format!(
-            "https://dysmsapi.aliyuncs.com/?{}&Signature={}",
-            canonicalize_query_string, signature
-        );
+        let url = format!("https://dysmsapi.aliyuncs.com/?{}&Signature={}", canonicalize_query_string, signature);
 
-        let resp = reqwest::get(url)
-            .await?
-            .json::<HashMap<String, String>>()
-            .await?;
+        let resp = reqwest::get(url).await?.json::<HashMap<String, String>>().await?;
 
         Ok(resp)
     }
@@ -132,10 +110,8 @@ impl<'a> Aliyun<'a> {
             all_params.insert(k, v);
         });
 
-        let mut vec_arams: Vec<String> = all_params
-            .iter()
-            .map(|(&k, &v)| format!("{}={}", k, urlencoding::encode(v)))
-            .collect();
+        let mut vec_arams: Vec<String> =
+            all_params.iter().map(|(&k, &v)| format!("{}={}", k, urlencoding::encode(v))).collect();
 
         vec_arams.sort();
 
@@ -144,10 +120,7 @@ impl<'a> Aliyun<'a> {
 
     /// 构建签名字符串
     fn signature(&self, string_to_sign: &[u8]) -> String {
-        let key = hmac::Key::new(
-            hmac::HMAC_SHA1_FOR_LEGACY_USE_ONLY,
-            format!("{}&", self.access_secret).as_bytes(),
-        );
+        let key = hmac::Key::new(hmac::HMAC_SHA1_FOR_LEGACY_USE_ONLY, format!("{}&", self.access_secret).as_bytes());
 
         let sign = hmac::sign(&key, string_to_sign);
 

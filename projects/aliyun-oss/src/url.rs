@@ -2,7 +2,7 @@ use std::collections::HashMap;
 use reqwest::header::DATE;
 use tracing::debug;
 use crate::auth::AuthAPI;
-use crate::oss::{API, OSS, OSSInfo};
+use crate::oss::{API, AlibabaOSS, OSSInfo};
 use crate::request::{RequestBuilder, RequestType};
 
 pub trait UrlApi: OSSInfo + API {
@@ -49,7 +49,7 @@ pub trait UrlApi: OSSInfo + API {
     fn sign_url<S: AsRef<str>>(&self, key: S, build: &RequestBuilder) -> String;
 }
 
-impl UrlApi for OSS {
+impl UrlApi for AlibabaOSS {
     fn sign_download_url<S: AsRef<str>>(&self, key: S, build: &RequestBuilder) -> String {
         let sign = self.sign_url(key.as_ref(), build);
         if let Some(cdn) = &build.cdn {
@@ -123,7 +123,7 @@ impl UrlApi for OSS {
 
 #[cfg(test)]
 mod tests {
-    use crate::oss::OSS;
+    use crate::oss::AlibabaOSS;
     use crate::request::RequestBuilder;
     use crate::url::UrlApi;
 
@@ -138,7 +138,7 @@ mod tests {
     #[test]
     fn sign_download_url_test() {
         init_log();
-        let oss = OSS::from_env();
+        let oss = AlibabaOSS::from_env();
         let build = RequestBuilder::new()
             .with_cdn("https://cdn.ipadump.com")
             .with_expire(60)
@@ -154,7 +154,7 @@ mod tests {
     #[test]
     fn sign_upload_url_test() {
         init_log();
-        let oss = OSS::from_env();
+        let oss = AlibabaOSS::from_env();
         let build = RequestBuilder::new()
             .with_cdn("http://cdn.ipadump.com")
             .with_content_type("text/plain")
