@@ -13,7 +13,6 @@ edition = "2021"
 exclude = ["package.json", "tests/**"]
 
 [dependencies]
-poem = "3.1.6"
 
 [dependencies.aliyun-error]
 workspace = true
