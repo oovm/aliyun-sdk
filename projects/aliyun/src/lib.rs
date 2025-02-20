@@ -10,6 +10,6 @@ pub use aliyun_sms as sms;
 pub use aliyun_smtp as smtp;
 
 pub struct AlibabaSDK {
-    pub access_key_id: String,
+    pub access_key: String,
     pub access_secret: String,
 }

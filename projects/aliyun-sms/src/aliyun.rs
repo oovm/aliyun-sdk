@@ -24,7 +24,7 @@ const FORMAT: &str = "json";
 
 /// aliyun sms
 pub struct AlibabaSMS<'a> {
-    pub access_key_id: &'a str,
+    pub access_key: &'a str,
     pub access_secret: &'a str,
 }
 
@@ -38,7 +38,7 @@ impl<'a> AlibabaSMS<'a> {
     /// let aliyun = Aliyun::new("xxxx", "xxxx");
     /// ```
     pub fn new(access_key_id: &'a str, access_secret: &'a str) -> Self {
-        Self { access_key_id, access_secret }
+        Self { access_key: access_key_id, access_secret }
     }
 
     /// send_sms
@@ -99,7 +99,7 @@ impl<'a> AlibabaSMS<'a> {
 
         let mut all_params = HashMap::new();
 
-        all_params.insert("AccessKeyId", self.access_key_id);
+        all_params.insert("AccessKeyId", self.access_key);
         all_params.insert("Format", FORMAT);
         all_params.insert("SignatureMethod", SIGNATURE_METHOD);
         all_params.insert("SignatureNonce", signature_nonce.as_str());

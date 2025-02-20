@@ -1,0 +1,28 @@
+[package]
+name = "aliyun-dns"
+version = "0.0.1"
+authors = ["Aster <192607617@qq.com>"]
+description = "阿里云统一错误处理"
+categories = ["rust-patterns"]
+homepage = "https://github.com/oovm/aliyun-sdk/tree/dev"
+repository = "https://github.com/oovm/aliyun-sdk/tree/dev/projects/aliyun-error"
+documentation = "https://docs.rs/aliyun-error"
+readme = "readme.md"
+license = "MPL-2.0"
+edition = "2021"
+exclude = ["package.json", "tests/**"]
+
+[dependencies]
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+reqwest = { workspace = true, features = ["json"] }
+tokio = { version = "1.26", features = ["full"] }
+anyhow = "1.0"
+url = "2.3"
+base64 = "0.21"
+rand = "0.8.5"
+chrono = "0.4"
+hmac = "0.12"
+sha1 = "0.10"
+
+[features]

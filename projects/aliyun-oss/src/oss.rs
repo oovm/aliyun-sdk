@@ -5,7 +5,7 @@ use reqwest::header::{HeaderMap, InvalidHeaderValue, AUTHORIZATION, CONTENT_TYPE
 /// OSS配置
 #[derive(Debug, Clone)]
 pub struct AlibabaOSS {
-    pub access_key_id: String,
+    pub access_key: String,
     pub access_secret: String,
     pub endpoint: String,
     pub bucket: String,
@@ -44,7 +44,7 @@ impl OSSInfo for AlibabaOSS {
     }
 
     fn key_id(&self) -> String {
-        self.access_key_id.clone()
+        self.access_key.clone()
     }
 
     fn key_secret(&self) -> String {
@@ -69,7 +69,7 @@ impl<'a> AlibabaOSS {
     }
     
     pub fn new<S: Into<String>>(key_id: S, key_secret: S, endpoint: S, bucket: S) -> Self {
-        AlibabaOSS { access_key_id: key_id.into(), access_secret: key_secret.into(), endpoint: endpoint.into(), bucket: bucket.into() }
+        AlibabaOSS { access_key: key_id.into(), access_secret: key_secret.into(), endpoint: endpoint.into(), bucket: bucket.into() }
     }
 
     pub fn format_host<S: AsRef<str>>(&self, bucket: S, key: S, build: &RequestBuilder) -> String {
@@ -114,8 +114,8 @@ impl<'a> AlibabaOSS {
 
 #[cfg(test)]
 mod tests {
-    use crate::error::AliError;
     use std::io::Read;
+    use aliyun_error::AliError;
 
     fn open_file(file_name: &str) -> Result<String, AliError> {
         let mut file = std::fs::File::open(file_name)?;

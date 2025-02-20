@@ -10,13 +10,13 @@ impl AlibabaSDK {
     /// 创建 OSS SMS
     #[cfg(feature = "aliyun-sms")]
     pub fn sms(&self) -> AlibabaSMS {
-        AlibabaSMS { access_key_id: &self.access_key_id, access_secret: &self.access_secret }
+        AlibabaSMS { access_key: &self.access_key, access_secret: &self.access_secret }
     }
     /// 创建 OSS 实例
     #[cfg(feature = "aliyun-oss")]
     pub fn oss(&self, endpoint: impl Into<String>, bucket: impl Into<String>) -> AlibabaOSS {
         AlibabaOSS {
-            access_key_id: self.access_key_id.clone(),
+            access_key: self.access_key.clone(),
             access_secret: self.access_secret.clone(),
             endpoint: endpoint.into(),
             bucket: bucket.into(),
