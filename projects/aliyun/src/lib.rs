@@ -1,10 +1,4 @@
-#![doc = include_str!("../README.md")]
-pub mod auth;
-pub mod oss;
-pub mod request;
-pub mod url;
-pub mod metadata;
-mod util;
-
-pub mod async_impl;
-pub mod entity;
+#![doc = include_str!("../readme.md")]
+pub use aliyun_error::{AliError, AliErrorKind, Result};
+pub use aliyun_oss as oss;
+pub use aliyun_smtp as smtp;

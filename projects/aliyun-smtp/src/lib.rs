@@ -1,3 +1,4 @@
+#![doc = include_str!("../readme.md")]
 mod helpers;
 pub mod provider;
 
