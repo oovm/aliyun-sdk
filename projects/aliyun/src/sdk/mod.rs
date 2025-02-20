@@ -1,7 +1,7 @@
 use crate::AlibabaSDK;
 use aliyun_oss::oss::AlibabaOSS;
 use aliyun_sms::aliyun::AlibabaSMS;
-use aliyun_smtp::AliyunMailer;
+use aliyun_smtp::AlibabaSMTP;
 use aliyun_smtp::lettre::error::Error;
 
 impl AlibabaSDK {
@@ -19,7 +19,7 @@ impl AlibabaSDK {
         }
     }
     /// 创建 SMTP 实例
-    pub fn smtp(&self, endpoint: impl Into<String>, bucket: impl Into<String>) -> Result<AliyunMailer, Error> {
-        AliyunMailer::login(endpoint, bucket)
+    pub fn smtp(&self, endpoint: impl Into<String>, bucket: impl Into<String>) -> Result<AlibabaSMTP, Error> {
+        AlibabaSMTP::login(endpoint, bucket)
     }
 }

@@ -8,4 +8,4 @@ use poem::{FromRequest, Request, RequestBody, error::GetDataError};
 
 mod aliyun;
 
-pub use self::aliyun::AliyunMailer;
+pub use self::aliyun::AlibabaSMTP;

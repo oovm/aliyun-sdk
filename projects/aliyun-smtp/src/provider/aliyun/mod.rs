@@ -3,13 +3,13 @@ use lettre::message::Mailbox;
 use std::{borrow::Cow, io::ErrorKind, str::FromStr};
 
 #[derive(Clone, Debug)]
-pub struct AliyunMailer {
+pub struct AlibabaSMTP {
     smtp: SmtpTransport,
     company: Cow<'static, str>,
     sender: Mailbox,
 }
 
-impl AliyunMailer {
+impl AlibabaSMTP {
     pub fn login(username:  impl Into<String>, password:  impl Into<String>) -> Result<Self, Error> {
         let username = username.into();
         let creds = Credentials::new(username.clone(), password.into());
@@ -27,7 +27,7 @@ impl AliyunMailer {
     }
 }
 
-impl EmailSender for AliyunMailer {
+impl EmailSender for AlibabaSMTP {
     fn send_message(&self, message: &Message) -> Result<Response, Error> {
         self.smtp.send(message).map_err(|e| Error::Io(std::io::Error::new(std::io::ErrorKind::Interrupted, e)))
     }
@@ -41,9 +41,9 @@ impl EmailSender for AliyunMailer {
     }
 }
 
-impl<'a> FromRequest<'a> for &'a AliyunMailer {
+impl<'a> FromRequest<'a> for &'a AlibabaSMTP {
     async fn from_request(input: &'a Request, _: &mut RequestBody) -> poem::Result<Self> {
-        match input.extensions().get::<AliyunMailer>() {
+        match input.extensions().get::<AlibabaSMTP>() {
             Some(s) => Ok(s),
             None => Err(poem::Error::from(GetDataError("`Route` 未配置 `.data(AliyunMailer)`"))),
         }
