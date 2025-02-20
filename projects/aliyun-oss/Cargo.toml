@@ -1,24 +1,36 @@
 [package]
-name = "sub_projects"
-publish = false
+name = "aliyun-oss"
 version = "0.0.0"
 authors = ["Aster <192607617@qq.com>"]
-description = "..."
+description = "阿里云 OSS"
 categories = ["rust-patterns"]
-homepage = "https://github.com/oovm/RustTemplate"
-repository = "https://github.com/oovm/RustTemplate"
-documentation = "https://docs.rs/sub_projects"
+homepage = "https://github.com/oovm/aliyun-sdk/tree/dev"
+repository = "https://github.com/oovm/aliyun-sdk/tree/dev/projects/aliyun-error"
+documentation = "https://docs.rs/aliyun-error"
 readme = "readme.md"
 license = "MPL-2.0"
 edition = "2021"
 exclude = ["package.json", "tests/**"]
 
 [dependencies]
+reqwest = { version = "0.12.12", default-features = false, features = ["json", "rustls-tls"] }
+serde = { version = "1.0", features = ["derive"] }
+chrono = "0.4.31"
+hmac = "0.12.1"
+base64 = "0.21.5"
+sha1 = "0.10.6"
+urlencoding = "2.1.3"
+tracing = { version = "0.1.40", optional = true }
+tracing-subscriber = { version = "0.3.18", optional = true }
+serde_json = "1.0.110"
+thiserror = "1.0.30"
 
 [dev-dependencies]
+tracing = "0.1.40"
+tracing-subscriber = "0.3.18"
+dotenvy = "0.15"
+tokio = { version = "1.35.1", features = ["full"] }
 
 [features]
 default = []
-
-[package.metadata.docs.rs]
-all-features = true
+debug-print = ["tracing", "tracing-subscriber"]

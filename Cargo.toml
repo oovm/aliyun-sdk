@@ -3,14 +3,14 @@ resolver = "2"
 members = ["projects/*"]
 default-members = [
     "projects/dash-scope",
-    "projects/aliyun-oss",
+#    "projects/aliyun-oss",
 ]
 exclude = [
     "projects/.DS_Store",
 ]
 
 [workspace.dependencies.aliyun-error]
-version = "0.0.0"
+version = "0.0.1"
 path = "projects/aliyun-error"
 
 [workspace.dependencies.reqwest]

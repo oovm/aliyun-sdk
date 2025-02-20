@@ -1,9 +1,15 @@
-#![deny(missing_debug_implementations, missing_copy_implementations)]
-#![warn(missing_docs, rustdoc::missing_crate_level_docs)]
-#![doc = include_str!("../readme.md")]
-#![doc(html_logo_url = "https://raw.githubusercontent.com/oovm/shape-rs/dev/projects/images/Trapezohedron.svg")]
-#![doc(html_favicon_url = "https://raw.githubusercontent.com/oovm/shape-rs/dev/projects/images/Trapezohedron.svg")]
+#![doc = include_str!("../README.md")]
+pub mod auth;
+pub mod oss;
+pub mod request;
+pub mod url;
+pub mod metadata;
+mod util;
 
-mod errors;
-
-pub use crate::errors::{ExampleErrorKind, Result, ExampleError};
+#[cfg(feature = "blocking")]
+pub mod blocking;
+#[cfg(not(feature = "blocking"))]
+pub mod async_impl;
+pub mod entity;
+pub mod error;
+pub(crate) mod macros;
