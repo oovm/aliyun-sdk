@@ -4,6 +4,7 @@ members = ["projects/*"]
 default-members = [
     "projects/aliyun",
     "projects/aliyun-oss",
+    "projects/aliyun-sms",
     "projects/aliyun-smtp",
     "projects/dash-scope",
 ]

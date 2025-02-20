@@ -1,6 +1,6 @@
 [package]
-name = "aliyun-sdk"
-version = "1.0.0"
+name = "aliyun-sms"
+version = "0.0.0"
 authors = ["Aster <192607617@qq.com>"]
 description = "阿里云 SDK"
 categories = ["rust-patterns"]
@@ -12,21 +12,13 @@ license = "MPL-2.0"
 edition = "2021"
 exclude = ["package.json", "tests/**"]
 
-[dependencies.aliyun-error]
-workspace = true
-features = []
+[dependencies]
+reqwest = { workspace = true, features = ["json"] }
+base64 = "0.13"
+chrono = "0.4"
+rand = "0.8"
+ring = "0.16"
+urlencoding = "2.1.0"
 
-[dependencies.aliyun-oss]
-version = "0.0.0"
-path = "../aliyun-oss"
-
-[dependencies.aliyun-smtp]
-version = "0.0.0"
-path = "../aliyun-smtp"
-
-[dependencies.aliyun-sms]
-version = "0.0.0"
-path = "../aliyun-sms"
-
-[features]
-default = []
+[dev-dependencies]
+tokio = { version = "1", features = ["full"] }
